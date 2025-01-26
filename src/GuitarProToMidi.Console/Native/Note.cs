@@ -45,8 +45,6 @@ public class Note
         IsHammer = old.IsHammer;
         IsPalmMuted = old.IsPalmMuted;
         IsMuted = old.IsMuted;
-        Harmonic = old.Harmonic;
-        HarmonicFret = old.HarmonicFret;
         SlidesToNext = old.SlidesToNext;
         SlideInFromAbove = old.SlideInFromAbove;
         SlideInFromBelow = old.SlideInFromBelow;
