@@ -221,15 +221,6 @@ public class Beat
         return false;
     }
 
-    public bool hasHarmonic()
-    {
-        foreach (Note note in notes)
-        {
-            if (note.effect.isHarmonic()) return true;
-        }
-        return false;
-    }
-
     public void addNote(Note note)
     {
         note.beat = this;
@@ -535,34 +526,6 @@ public class GuitarString
     }
 }
 
-public abstract class HarmonicEffect
-{
-    public float fret = 0;
-    public int type = 0;
-}
-public class NaturalHarmonic : HarmonicEffect { public NaturalHarmonic() { type = 1; } }
-public class ArtificialHarmonic : HarmonicEffect
-{
-    public PitchClass pitch;
-    public Octave octave;
-    public ArtificialHarmonic(PitchClass pitch = null, Octave octave = 0)
-    {
-        this.pitch = pitch;
-        this.octave = octave;
-        this.type = 2;
-    }
-}
-public class TappedHarmonic : HarmonicEffect
-{
-    public TappedHarmonic(int fret = 0)
-    {
-        this.fret = fret;
-        this.type = 3;
-    }
-}
-public class PinchHarmonic : HarmonicEffect { public PinchHarmonic() { type = 4; } }
-public class SemiHarmonic : HarmonicEffect { public SemiHarmonic() { type = 5; } }
-public class FeedbackHarmonic : HarmonicEffect { public FeedbackHarmonic() { type = 6; } }
 public class LyricLine
 {
     public int startingMeasure = 1;
@@ -845,7 +808,6 @@ public class NoteEffect
     public Fingering rightHandFinger = Fingering.open;
     public Note note = null;
     public BendEffect bend = null;
-    public HarmonicEffect harmonic = null;
     public GraceEffect grace = null;
     public TrillEffect trill = null;
     public TremoloPickingEffect tremoloPicking = null;
@@ -854,7 +816,6 @@ public class NoteEffect
     {
         return (bend != null && bend.points.Count > 0);
     }
-    public bool isHarmonic() { return harmonic != null; }
     public bool isGrace() { return grace != null; }
     public bool isTrill() { return trill != null; }
     public bool isTremoloPicking() { return tremoloPicking != null; }
