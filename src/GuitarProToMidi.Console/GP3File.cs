@@ -289,14 +289,6 @@ public class GP3File : GPFile
             note.effect.leftHandFinger = (Fingering)GPBase.readSignedByte()[0];
             note.effect.rightHandFinger = (Fingering)GPBase.readSignedByte()[0];
         }
-        if ((flags & 0x08) != 0)
-        {
-            note.effect = readNoteEffects(note);
-            if (note.effect.isHarmonic() && note.effect.harmonic is TappedHarmonic)
-            {
-                note.effect.harmonic.fret = note.value + 12;
-            }
-        }
 
     }
 
@@ -503,8 +495,6 @@ public class GP3File : GPFile
 
         - *0x01*: vibrato
         - *0x02*: wide vibrato
-        - *0x04*: natural harmonic
-        - *0x08*: artificial harmonic
         - *0x10*: fade in
         - *0x20*: tremolo bar or slap effect
         - *0x40*: beat stroke direction
@@ -538,8 +528,6 @@ public class GP3File : GPFile
             }
         }
         if ((flags1 & 0x40) != 0) beatEffects.stroke = readBeatStroke();
-        if ((flags1 & 0x04) != 0) effect.harmonic = new NaturalHarmonic();
-        if ((flags1 & 0x08) != 0) effect.harmonic = new ArtificialHarmonic();
 
         return beatEffects;
     }
