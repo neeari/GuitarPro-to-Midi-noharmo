@@ -526,8 +526,6 @@ public class GP6File : GPFile
         Node nProperties = nNote.getSubnodeByName("Properties", true);
         if (nProperties != null)
         {
-            float harmonicFret = -1;
-            string harmonicType = "";
             float bendDestOff = 100.0f;
             float bendDestVal = 0.0f;
             float bendMidOff1 = -1.0f;
@@ -561,12 +559,6 @@ public class GP6File : GPFile
                         break;
                     case "Muted":
                         note.type = NoteType.dead;
-                        break;
-                    case "HarmonicFret":
-                        harmonicFret = float.Parse(nProperty.subnodes[0].content, CultureInfo.InvariantCulture);
-                        break;
-                    case "HarmonicType":
-                        harmonicType = nProperty.subnodes[0].content;
                         break;
                     case "Bended":
                         hasBendEffect = true;
@@ -673,24 +665,6 @@ public class GP6File : GPFile
                 bendEffect.points.Add(new BendPoint(100.0f, bendDestVal));
 
                 note.effect.bend = bendEffect;
-            }
-
-            if (harmonicFret != -1)
-            {
-
-                if (harmonicType.Equals("Natural") || harmonicType.Equals(""))
-                {
-                    note.effect.harmonic = new NaturalHarmonic();  //Ignore the complicated GP3-5 settings
-                }
-                else if (harmonicType.Equals("Artificial"))      //There should be during playback a function that reads only fret and type and creates the harmonic + for GP3-5 files that transfers the old format
-                    note.effect.harmonic = new ArtificialHarmonic();
-                else if (harmonicType.Equals("Pinch")) note.effect.harmonic = new PinchHarmonic();
-                else if (harmonicType.Equals("Tap")) note.effect.harmonic = new TappedHarmonic();
-                else if (harmonicType.Equals("Semi")) note.effect.harmonic = new SemiHarmonic();
-                else if (harmonicType.Equals("Feedback")) note.effect.harmonic = new FeedbackHarmonic();
-
-                note.effect.harmonic.fret = harmonicFret;
-
             }
 
             if (element != -1) //GP6-style Drumset
