@@ -10,8 +10,7 @@ public class Note
     public Fading Fading { get; set; } = Fading.None;
     public int Fret { get; set; }
     public HarmonicType Harmonic { get; set; } = HarmonicType.None;
-    public float HarmonicFret { get; set; }
-    public int Index { get; set; }
+    public float HarmonicFret { get; set; }    public int Index { get; set; }
     public bool IsHammer { get; set; }
     public bool IsMuted { get; set; }
     public bool IsPalmMuted { get; set; }
