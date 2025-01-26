@@ -250,12 +250,6 @@ public class Track
                 note = Capo + n.Fret;
             }
 
-            if (n.Harmonic != HarmonicType.None) //Has Harmonics
-            {
-                var harmonicNote = GetHarmonic(Tuning[n.Str - 1], n.Fret, Capo, n.HarmonicFret, n.Harmonic);
-                note = harmonicNote;
-            }
-
             var noteChannel = Channel;
 
             if (n.BendPoints.Count > 0) //Has Bending
@@ -478,43 +472,6 @@ public class Track
 
         return -1;
     }
-
-    private static int GetHarmonic(int baseTone, int fret, int capo, float harmonicFret, HarmonicType type)
-    {
-        //Capo, base tone and fret (if not natural harmonic) shift the harmonics simply
-        var val = baseTone + capo;
-        if (type != HarmonicType.Natural)
-        {
-            val += (int)Math.Round(harmonicFret);
-        }
-
-        val += fret;
-
-        val += harmonicFret switch
-        {
-            2.4f => 34,
-            2.7f => 31,
-            3.2f => 28,
-            4f => 24,
-            5f => 19,
-            5.8f => 28,
-            7f => 12,
-            8.2f => 28,
-            9f => 19,
-            9.6f => 24,
-            12f => 0,
-            14.7f => 19,
-            16f => 12,
-            17f => 19,
-            19f => 0,
-            21.7f => 12,
-            24f => 0,
-            _ => throw new ArgumentOutOfRangeException(nameof(harmonicFret), harmonicFret, "Unhandled value.")
-        };
-
-        return Math.Min(val, 127);
-    }
-
 
     private static IEnumerable<BendPoint> FindAndSortCurrentBendPoints(IEnumerable<BendingPlan> activeBendingPlans,
         int index)
