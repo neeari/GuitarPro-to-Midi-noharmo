@@ -308,14 +308,6 @@ public class GP4File : GPFile
             note.effect.leftHandFinger = (Fingering)GPBase.readSignedByte()[0];
             note.effect.rightHandFinger = (Fingering)GPBase.readSignedByte()[0];
         }
-        if ((flags & 0x08) != 0)
-        {
-            note.effect = readNoteEffects(note);
-            if (note.effect.isHarmonic() && note.effect.harmonic is TappedHarmonic)
-            {
-                note.effect.harmonic.fret = note.value + 12;
-            }
-        }
 
     }
 
@@ -350,7 +342,6 @@ public class GP4File : GPFile
         if ((flags1 & 0x10) != 0) noteEffect.grace = readGrace();
         if ((flags2 & 0x04) != 0) noteEffect.tremoloPicking = readTremoloPicking();
         if ((flags2 & 0x08) != 0) noteEffect.slides = readSlides();
-        if ((flags2 & 0x10) != 0) noteEffect.harmonic = readHarmonic(note);
         if ((flags2 & 0x20) != 0) noteEffect.trill = readTrill();
 
         return noteEffect;
@@ -384,49 +375,6 @@ public class GP4File : GPFile
         var ret_val = new List<SlideType>();
         ret_val.Add((SlideType)GPBase.readSignedByte()[0]);
         return ret_val;
-    }
-
-    private HarmonicEffect readHarmonic(Note note)
-    {
-        /*Harmonic is encoded in :ref:`signed-byte`. Values correspond to:
-
-        - *1*: natural harmonic
-        - *3*: tapped harmonic
-        - *4*: pinch harmonic
-        - *5*: semi-harmonic
-        - *15*: artificial harmonic on (*n + 5*)th fret
-        - *17*: artificial harmonic on (*n + 7*)th fret
-        - *22*: artificial harmonic on (*n + 12*)th fret
-*/
-        var harmonicType = GPBase.readSignedByte()[0];
-        HarmonicEffect harmonic = null;
-        switch (harmonicType)
-        {
-            case 1:
-                harmonic = new NaturalHarmonic(); break;
-            case 3:
-                harmonic = new TappedHarmonic(); break;
-            case 4:
-                harmonic = new PinchHarmonic(); break;
-            case 5:
-                harmonic = new SemiHarmonic(); break;
-            case 15:
-                var pitch = new PitchClass((note.realValue() + 7) % 12, -1, "", "", 7.0f);
-                var octave = Octave.ottava;
-                harmonic = new ArtificialHarmonic(pitch, octave);
-                break;
-            case 17:
-                pitch = new PitchClass(note.realValue(), -1, "", "", 12.0f);
-                octave = Octave.quindicesima;
-                harmonic = new ArtificialHarmonic(pitch, octave);
-                break;
-            case 22:
-                pitch = new PitchClass(note.realValue(), -1, "", "", 5.0f);
-                octave = Octave.ottava;
-                harmonic = new ArtificialHarmonic(pitch, octave);
-                break;
-        }
-        return harmonic;
     }
 
     private TrillEffect readTrill()
@@ -643,8 +591,6 @@ public class GP4File : GPFile
 
         - *0x01*: vibrato
         - *0x02*: wide vibrato
-        - *0x04*: natural harmonic
-        - *0x08*: artificial harmonic
         - *0x10*: fade in
         - *0x20*: tremolo bar or slap effect
         - *0x40*: beat stroke direction
