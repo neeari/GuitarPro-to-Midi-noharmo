@@ -379,29 +379,6 @@ public class Format
                         note.IsPalmMuted = n.effect.palmMute;
                         note.IsMuted = n.type == NoteType.dead;
 
-                        if (n.effect.harmonic != null)
-                        {
-                            note.HarmonicFret = n.effect.harmonic.fret;
-                            if (n.effect.harmonic.fret == 0) //older format..
-                            {
-                                if (n.effect.harmonic.type == 2)
-                                {
-                                    note.HarmonicFret = ((ArtificialHarmonic)n.effect.harmonic).pitch
-                                        .actualOvertone;
-                                }
-                            }
-
-                            note.Harmonic = n.effect.harmonic.type switch
-                            {
-                                1 => HarmonicType.Natural,
-                                2 => HarmonicType.Artificial,
-                                3 => HarmonicType.Pinch,
-                                4 => HarmonicType.Tapped,
-                                5 => HarmonicType.Semi,
-                                _ => HarmonicType.Natural
-                            };
-                        }
-
                         if (n.effect.slides != null)
                         {
                             foreach (var sl in n.effect.slides)
@@ -436,12 +413,6 @@ public class Format
                             if (last != null)
                             {
                                 note.Fret = last.Fret; //For GP3 & GP4
-                                if (last.Harmonic != note.Harmonic ||
-                                    Math.Abs(last.HarmonicFret - note.HarmonicFret) > 0.0001
-                                )
-                                {
-                                    dontAddNote = false;
-                                }
 
                                 if (dontAddNote)
                                 {
